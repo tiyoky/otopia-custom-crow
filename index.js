@@ -12,7 +12,7 @@ const client = new Client({
 
 let prefix = '+';
 
-client.on('ready', () => {
+client.once('ready', () => {
   console.log(`Connecté en tant que ${client.user.tag}!`);
   client.user.setPresence({
     activities: [{
