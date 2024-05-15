@@ -57,15 +57,4 @@ client.on('messageCreate', message => {
   }
 });
 
-async function login() {
-  try {
-    await client.login(process.env.TOKEN);
-    console.log(`\x1b[36m%s\x1b[0m`, `|    🐇 Logged in as ${client.user.tag}`);
-  } catch (error) {
-    console.error('Failed to log in:', error);
-    process.exit(1);
-  }
-}
-
-login(); // Ajoutez cette ligne pour appeler la fonction login
-
+client.login(process.env.TOKEN);
