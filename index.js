@@ -9,27 +9,24 @@ const client = new Client({
   partials: [Partials.Channel]
 });
 
-
 let prefix = '+';
 
 client.on('ready', () => {
   console.log(`Connecté en tant que ${client.user.tag}!`);
   client.user.setPresence({
-  activities: [{
-    name: 'otopia soon...',
-    type: 'STREAMING',
-    url: 'https://discord.gg/hufWHfhnfR'
-  }]
+    activities: [{
+      name: 'otopia soon...',
+      type: 'STREAMING',
+      url: 'https://discord.gg/hufWHfhnfR'
+    }]
+  }); // Ajoutez cette accolade fermante
 });
-
 
 client.on('messageCreate', message => {
   if (message.author.bot || !message.content.startsWith(prefix)) return;
 
-
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
-
 
   if (command === 'prefix') {
     if (!message.member.permissions.has('ADMINISTRATOR')) {
@@ -70,4 +67,5 @@ async function login() {
   }
 }
 
-login()
+login(); // Ajoutez cette ligne pour appeler la fonction login
+
