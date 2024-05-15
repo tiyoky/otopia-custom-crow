@@ -23,6 +23,10 @@ client.on('messageCreate', message => {
 
 
   if (command === 'prefix') {
+    if (!message.member.permissions.has('ADMINISTRATOR')) {
+      return message.channel.send('Seuls les administrateurs peuvent changer le préfixe.');
+    }
+
     if (args.length === 1) {
       const newPrefix = args[0];
       prefix = newPrefix;
