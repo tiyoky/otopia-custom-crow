@@ -5,6 +5,13 @@ let prefix = '+';
 
 client.on('ready', () => {
   console.log(`Connecté en tant que ${client.user.tag}!`);
+  client.user.setPresence({
+    activities: [{
+      name: 'otopia soon...',
+      type: 'STREAMING',
+      url: 'https://discord.gg/hufWHfhnfR'
+    }]
+  });
 });
 
 client.on('messageCreate', message => {
