@@ -15,13 +15,13 @@ let prefix = '+';
 client.once('ready', () => {
   console.log(`Connecté en tant que ${client.user.tag}!`);
   client.user.setPresence({
-    activities: [{
-      name: 'otopia soon...',
-      type: 'STREAMING',
-      url: 'https://discord.gg/hufWHfhnfR'
-    }]
-  });
+  activities: [{
+    name: 'otopia soon...',
+    type: 'STREAMING',
+    url: 'https://discord.gg/hufWHfhnfR'
+  }]
 });
+
 
 client.on('messageCreate', message => {
   if (message.author.bot || !message.content.startsWith(prefix)) return;
