@@ -42,7 +42,7 @@ client.on('messageCreate', message => {
   }
 
   if (command === 'help') {
-    const helpEmbed = new MessageEmbed()
+    const helpEmbed = new EmbedBuilder() // Utilisation de EmbedBuilder au lieu de MessageEmbed
       .setColor('#00FF00') 
       .setTitle('Menu d\'aide')
       .setDescription('Voici les commandes disponibles :')
@@ -50,7 +50,7 @@ client.on('messageCreate', message => {
         { name: `${prefix}prefix <nouveau préfixe>`, value: 'Change le préfixe du bot.' },
         { name: `${prefix}help`, value: 'Affiche ce message d\'aide.' }
       )
-      .setFooter('Aide du Bot', client.user.displayAvatarURL());
+      .setFooter({ text: 'Aide du Bot', iconURL: client.user.displayAvatarURL() });
 
     message.channel.send({ embeds: [helpEmbed] });
   }
