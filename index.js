@@ -4,9 +4,10 @@ const client = new Client({
     GatewayIntentBits.Guilds, 
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildVoiceStates 
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildMessageReactions
   ],
-  partials: [Partials.Channel]
+  partials: [Partials.Channel, Partials.Message, Partials.Reaction, Partials.User]
 });
 
 let prefix = '+';
@@ -66,6 +67,56 @@ client.on('messageCreate', async message => {
       });
   }
 
+  if (command === 'gcreate') {
+    if (args.length < 4) {
+      return message.channel.send(`Usage: ${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`);
+    }
+
+    const [title, description, time, winnersCount] = args;
+    const duration = parseInt(time);
+    const winnersNumber = parseInt(winnersCount);
+
+    if (isNaN(duration) || isNaN(winnersNumber)) {
+      return message.channel.send('Veuillez fournir un temps et un nombre de gagnants valides.');
+    }
+
+    const giveawayEmbed = new EmbedBuilder()
+      .setTitle(title)
+      .setDescription(description)
+      .addFields(
+        { name: 'Nombre de gagnants', value: `${winnersNumber}`, inline: true },
+        { name: 'Temps', value: `${duration}ms`, inline: true }
+      )
+      .setColor('#FF0000')
+      .setFooter({ text: 'Réagissez avec 🎉 pour participer!' });
+
+    const giveawayMessage = await message.channel.send({ embeds: [giveawayEmbed] });
+    await giveawayMessage.react('🎉');
+
+    setTimeout(async () => {
+      const fetchedMessage = await message.channel.messages.fetch(giveawayMessage.id);
+      const reactions = fetchedMessage.reactions.cache.get('🎉');
+      
+      if (!reactions) return message.channel.send('Pas de réactions.');
+
+      const users = await reactions.users.fetch();
+      const participants = users.filter(user => !user.bot).map(user => user.id);
+
+      if (participants.length === 0) {
+        return message.channel.send('Personne n\'a participé au giveaway.');
+      }
+
+      const winners = [];
+      for (let i = 0; i < winnersNumber; i++) {
+        const randomIndex = Math.floor(Math.random() * participants.length);
+        winners.push(participants.splice(randomIndex, 1)[0]);
+      }
+
+      message.channel.send(winners.map(winner => `<@${winner}>`).join(', ') + ' a/ont gagné! Créez un ticket pour réclamer votre prix.');
+
+    }, duration);
+  }
+
   if (command === 'help') {
     const helpEmbed = new EmbedBuilder()
       .setColor('#FFFF00')
@@ -78,7 +129,7 @@ client.on('messageCreate', async message => {
         { name: `${prefix}unmute <@user>`, value: 'Unmute un utilisateur.' },
         { name: `${prefix}kick <@user>`, value: 'Kick un utilisateur.' },
         { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
-        { name: `${prefix}create <émoji>`, value: 'créer l\'émojie de nimporte quel serv.' }
+        { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' }
       )
       .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
 
@@ -151,3 +202,4 @@ client.on('messageCreate', async message => {
 });
 
 client.login(process.env.TOKEN);
+
