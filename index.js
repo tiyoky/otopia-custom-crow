@@ -77,7 +77,8 @@ client.on('messageCreate', async message => {
         { name: `${prefix}mute <@user>`, value: 'Mute un utilisateur.' },
         { name: `${prefix}unmute <@user>`, value: 'Unmute un utilisateur.' },
         { name: `${prefix}kick <@user>`, value: 'Kick un utilisateur.' },
-        { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' }
+        { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
+        { name: `${prefix}create <émoji>`, value: 'créer l\'émojie de nimporte quel serv.' }
       )
       .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
 
