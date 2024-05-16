@@ -1,5 +1,4 @@
 const { Client, GatewayIntentBits, Partials, MessageEmbed } = require('discord.js');
-const { EmbedBuilder } = require('@discordjs/builders');
 const client = new Client({ 
   intents: [
     GatewayIntentBits.Guilds, 
@@ -19,7 +18,7 @@ client.on('ready', () => {
       type: 'STREAMING',
       url: 'https://discord.gg/hufWHfhnfR'
     }]
-  }); // Ajoutez cette accolade fermante
+  });
 });
 
 client.on('messageCreate', message => {
