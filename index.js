@@ -52,7 +52,7 @@ client.on('messageCreate', async message => {
 
   if (command === 'help') {
     const helpEmbed = new EmbedBuilder()
-      .setColor('#00FF00')
+      .setColor('#FFFF00')
       .setTitle('Menu d\'aide')
       .setDescription('Voici les commandes disponibles :')
       .addFields(
