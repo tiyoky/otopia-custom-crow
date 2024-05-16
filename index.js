@@ -50,6 +50,22 @@ client.on('messageCreate', async message => {
     }
   }
 
+      if (command === 'create') {
+        if (!args.length || !args[0].match(/<:[a-zA-Z0-9]+:[0-9]+>/)) {
+            return message.channel.send("Merci de spécifier un emoji valide.");
+        }
+
+        const emojiName = args[0].split(':')[1];
+        const emojiId = args[0].split(':')[2].slice(0, -1);
+        
+        message.guild.emojis.create(`https://cdn.discordapp.com/emojis/${emojiId}.png`, emojiName)
+            .then(emoji => message.channel.send(`Emoji ${emoji} créé avec succès!`))
+            .catch(error => {
+                console.error('Erreur lors de la création de l\'emoji:', error);
+                message.channel.send("Une erreur s'est produite lors de la création de l'emoji.");
+            });
+
+
   if (command === 'help') {
     const helpEmbed = new EmbedBuilder()
       .setColor('#FFFF00')
