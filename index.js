@@ -14,8 +14,8 @@ client.on('ready', () => {
   console.log(`Connecté en tant que ${client.user.tag}!`);
   
   const statuses = [
-    { name: 'made by tiyoky', type: 'PLAYING' },
-    { name: 'otopia soon...', type: 'PLAYING' }
+    { name: 'made by tiyoky', type: 'WATCHING' },
+    { name: 'otopia soon...', type: 'WATCHING' }
   ];
   
   let currentStatus = 0;
