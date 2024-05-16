@@ -1,9 +1,10 @@
-const { Client, GatewayIntentBits, Partials, EmbedBuilder } = require('discord.js'); // Utilisation de EmbedBuilder au lieu de MessageEmbed
+const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField } = require('discord.js'); // Ajout de PermissionsBitField
 const client = new Client({ 
   intents: [
     GatewayIntentBits.Guilds, 
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildVoiceStates 
   ],
   partials: [Partials.Channel]
 });
@@ -26,7 +27,7 @@ client.on('ready', () => {
       status: 'online'
     });
     currentStatus = (currentStatus + 1) % statuses.length;
-  }, 2000); // Changer toutes les 2 secondes
+  }, 2000); 
 });
 
 client.on('messageCreate', async message => {
