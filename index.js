@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials, MessageEmbed } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, EmbedBuilder } = require('discord.js'); // Utilisation de EmbedBuilder au lieu de MessageEmbed
 const client = new Client({ 
   intents: [
     GatewayIntentBits.Guilds, 
