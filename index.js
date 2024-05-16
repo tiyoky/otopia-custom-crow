@@ -12,13 +12,21 @@ let prefix = '+';
 
 client.on('ready', () => {
   console.log(`Connecté en tant que ${client.user.tag}!`);
-  client.user.setPresence({
-    activities: [{
-      name: 'otopia soon...',
-      type: 'STREAMING',
-      url: 'https://www.twitch.tv/your_channel'
-    }]
-  });
+  
+  const statuses = [
+    { name: 'made by tiyoky', type: 'PLAYING' },
+    { name: 'otopia soon...', type: 'PLAYING' }
+  ];
+  
+  let currentStatus = 0;
+
+  setInterval(() => {
+    client.user.setPresence({
+      activities: [statuses[currentStatus]],
+      status: 'online'
+    });
+    currentStatus = (currentStatus + 1) % statuses.length;
+  }, 2000); // Changer toutes les 2 secondes
 });
 
 client.on('messageCreate', message => {
