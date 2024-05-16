@@ -16,7 +16,7 @@ client.on('ready', () => {
     activities: [{
       name: 'otopia soon...',
       type: 'STREAMING',
-      url: 'https://discord.gg/hufWHfhnfR'
+      url: 'https://www.twitch.tv/your_channel'
     }]
   });
 });
