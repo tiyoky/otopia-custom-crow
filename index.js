@@ -118,25 +118,26 @@ client.on('messageCreate', async message => {
     }, duration);
   }
 
-  if (command === 'help') {
-    const helpEmbed = new EmbedBuilder()
-      .setColor('#FFFF00')
-      .setTitle('Menu d\'aide')
-      .setDescription('Voici les commandes disponibles :')
-      .addFields(
-        { name: `${prefix}prefix <nouveau préfixe>`, value: 'Change le préfixe du bot.' },
-        { name: `${prefix}help`, value: 'Affiche ce message d\'aide.' },
-        { name: `${prefix}mute <@user>`, value: 'Mute un utilisateur.' },
-        { name: `${prefix}unmute <@user>`, value: 'Unmute un utilisateur.' },
-        { name: `${prefix}kick <@user>`, value: 'Kick un utilisateur.' },
-        { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
-        { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' },
-        { name: `${prefix}setticket`, value: met le systeme de ticket.' }
-      )
-      .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
+if (command === 'help') {
+  const helpEmbed = new EmbedBuilder()
+    .setColor('#FFFF00')
+    .setTitle('Menu d\'aide')
+    .setDescription('Voici les commandes disponibles :')
+    .addFields(
+      { name: `${prefix}prefix <nouveau préfixe>`, value: 'Change le préfixe du bot.' },
+      { name: `${prefix}help`, value: 'Affiche ce message d\'aide.' },
+      { name: `${prefix}mute <@user>`, value: 'Mute un utilisateur.' },
+      { name: `${prefix}unmute <@user>`, value: 'Unmute un utilisateur.' },
+      { name: `${prefix}kick <@user>`, value: 'Kick un utilisateur.' },
+      { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
+      { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' },
+      { name: `${prefix}setticket`, value: 'Mettre en place le système de ticket.' }
+    )
+    .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
 
-    message.channel.send({ embeds: [helpEmbed] });
-  }
+  message.channel.send({ embeds: [helpEmbed] });
+}
+
 
   if (command === 'mute') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
