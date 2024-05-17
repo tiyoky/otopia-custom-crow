@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField, MessageActionRow, MessageButton } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelTypes, Intents } = require('discord.js');
 
 const client = new Client({ 
   intents: [
@@ -6,7 +6,9 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildVoiceStates,
-    GatewayIntentBits.GuildMessageReactions
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildMessageTyping
   ],
   partials: [Partials.Channel, Partials.Message, Partials.Reaction, Partials.User]
 });
@@ -15,23 +17,11 @@ let prefix = '+';
 
 client.on('ready', () => {
   console.log(`Connecté en tant que ${client.user.tag}!`);
-  
-  const statuses = [
-    { name: 'made by tiyoky', type: 'PLAYING' },
-    { name: 'otopia soon...', type: 'PLAYING' }
-  ];
-  
-  let currentStatus = 0;
-
-  setInterval(() => {
-    client.user.setPresence({
-      activities: [statuses[currentStatus]],
-      status: 'online'
-    });
-    currentStatus = (currentStatus + 1) % statuses.length;
-  }, 2000); 
+  client.user.setActivity('made by tiyoky ❤️', { type: 'WATCHING' });
 });
 
+
+  
 client.on('messageCreate', async message => {
   if (message.author.bot || !message.content.startsWith(prefix)) return;
 
@@ -59,8 +49,8 @@ client.on('messageCreate', async message => {
 
     const emojiName = args[0].split(':')[1];
     const emojiId = args[0].split(':')[2].slice(0, -1);
-    
-    message.guild.emojis.create(`https://cdn.discordapp.com/emojis/${emojiId}.png`, emojiName)
+
+    message.guild.emojis.create({ attachment: `https://cdn.discordapp.com/emojis/${emojiId}.png`, name: emojiName })
       .then(emoji => message.channel.send(`Emoji ${emoji} créé avec succès!`))
       .catch(error => {
         console.error('Erreur lors de la création de l\'emoji:', error);
@@ -97,7 +87,7 @@ client.on('messageCreate', async message => {
     setTimeout(async () => {
       const fetchedMessage = await message.channel.messages.fetch(giveawayMessage.id);
       const reactions = fetchedMessage.reactions.cache.get('🎉');
-      
+
       if (!reactions) return message.channel.send('Pas de réactions.');
 
       const users = await reactions.users.fetch();
@@ -130,11 +120,22 @@ client.on('messageCreate', async message => {
         { name: `${prefix}unmute <@user>`, value: 'Unmute un utilisateur.' },
         { name: `${prefix}kick <@user>`, value: 'Kick un utilisateur.' },
         { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
-        { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' }
+        { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' },
+        { name: `${prefix}stop`, value: 'stop le bot \(owner only\)' },
+        { name: `${prefix}say <msg>`, value: 'envoie le \(msg\) \(admin only\)' }
       )
       .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
 
     message.channel.send({ embeds: [helpEmbed] });
+  }
+
+  if (command === 'say') {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+      return message.channel.send('Seuls les administrateurs peuvent utiliser cette commande.');
+    }
+
+    const sayMessage = args.join(' ');
+    message.channel.send(sayMessage);
   }
 
   if (command === 'mute') {
@@ -158,49 +159,26 @@ client.on('messageCreate', async message => {
       return message.channel.send('Vous n\'avez pas les permissions pour unmute les membres.');
     }
     const user = message.mentions.members.first();
-   
-    if (!user) {
-      return message.channel.send('Veuillez mentionner un utilisateur à unmute.');
-    }
-    try {
-      await user.voice.setMute(false, 'Unmuted by command');
-      message.channel.send(`${user.user.tag} a été unmute.`);
-    } catch (err) {
-      message.channel.send('Impossible de unmute ce membre.');
-    }
-  }
+    if  (!user) {
+            return message.channel.send('Veuillez mentionner un utilisateur à unmute.');
+          }
+          try {
+            await user.voice.setMute(false, 'Unmuted by command');
+            message.channel.send(`${user.user.tag} a été unmute.`);
+          } catch (err) {
+            message.channel.send('Impossible de unmute ce membre.');
+          }
+        }
 
-  if (command === 'kick') {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-      return message.channel.send('Vous n\'avez pas les permissions pour kick les membres.');
-    }
-    const user = message.mentions.members.first();
-    if (!user) {
-      return message.channel.send('Veuillez mentionner un utilisateur à kick.');
-    }
-    try {
-      await user.kick('Kicked by command');
-      message.channel.send(`${user.user.tag} a été kick.`);
-    } catch (err) {
-      message.channel.send('Impossible de kick ce membre.');
-    }
-  }
+        if (command === 'stop') {
+          const ownerId = '1018206885704372274';
+          if (message.author.id !== ownerId) {
+            return message.channel.send('Seul le propriétaire du bot peut utiliser cette commande.');
+          }
 
-  if (command === 'ban') {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      return message.channel.send('Vous n\'avez pas les permissions pour ban les membres.');
-    }
-    const user = message.mentions.members.first();
-    if (!user) {
-      return message.channel.send('Veuillez mentionner un utilisateur à ban.');
-    }
-    try {
-      await user.ban({ reason: 'Banned by command' });
-      message.channel.send(`${user.user.tag} a été ban.`);
-    } catch (err) {
-      message.channel.send('Impossible de ban ce membre.');
-    }
-  }
-});
+          message.channel.send('Arrêt du bot...');
+          client.destroy();
+        }
+      });
 
-client.login(process.env.TOKEN);
+      client.login(process.env.TOKEN);
