@@ -145,15 +145,10 @@ client.on('messageCreate', async message => {
       message.channel.send('Impossible de mute ce membre.');
     }
   } else if (command === 'unmute') {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Mute    } catch (err) {
-      message.channel.send('Impossible de mute ce membre.');
-    }
-  } else if (command === 'unmute') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
       return message.channel.send('Vous n\'avez pas les permissions pour unmute les membres.');
     }
     const user = message.mentions.members.first();
-   
     if (!user) {
       return message.channel.send('Veuillez mentionner un utilisateur à unmute.');
     }
@@ -191,7 +186,6 @@ client.on('messageCreate', async message => {
     } catch (err) {
       message.channel.send('Impossible de ban ce membre.');
     }
-
   } else if (command === 'restart') {
     if (message.author.id !== '1018206885704372274') {
       return message.channel.send('Seul l\'owner du bot peut utiliser cette commande.');
