@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField, MessageActionRow, MessageButton } = require('discord.js');
 
 const client = new Client({ 
   intents: [
@@ -25,7 +25,7 @@ client.on('ready', () => {
 
   setInterval(() => {
     client.user.setPresence({
-      activities: [{ name: statuses[currentStatus].name, type: statuses[currentStatus].type }],
+      activities: [statuses[currentStatus]],
       status: 'online'
     });
     currentStatus = (currentStatus + 1) % statuses.length;
@@ -130,8 +130,7 @@ client.on('messageCreate', async message => {
         { name: `${prefix}unmute <@user>`, value: 'Unmute un utilisateur.' },
         { name: `${prefix}kick <@user>`, value: 'Kick un utilisateur.' },
         { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
-        { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' },
-        { name: `${prefix}restart`, value: 'Redémarre le bot (réservé à l\'owner).' }
+        { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' }
       )
       .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
 
@@ -159,6 +158,7 @@ client.on('messageCreate', async message => {
       return message.channel.send('Vous n\'avez pas les permissions pour unmute les membres.');
     }
     const user = message.mentions.members.first();
+   
     if (!user) {
       return message.channel.send('Veuillez mentionner un utilisateur à unmute.');
     }
@@ -201,28 +201,6 @@ client.on('messageCreate', async message => {
       message.channel.send('Impossible de ban ce membre.');
     }
   }
-
-  if (command === 'restart') {
-    if (message.author.id !== '1018206885704372274') {
-      return message.channel.send('Seul l\'owner du bot peut utiliser cette commande.');
-    }
-    
-    message.channel.send('Redémarrage du bot...').then(() => {
-      client.destroy().then(() => {
-        process.exit();
-      });
-    });
-  }
 });
 
-async function login() {
-  try {
-    await client.login(process.env.TOKEN);
-    console.log(`\x1b[36m%s\x1b[0m`, `|    🐇 Logged in as ${client.user.tag}`);
-  } catch (error) {
-    console.error('Failed to log in:', error);
-    process.exit(1);
-  }
-}
-
-login();
+client.login(process.env.TOKEN);
