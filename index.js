@@ -1,4 +1,5 @@
-const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField } = require('discord.js'); // Ajout de PermissionsBitField
+const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField, MessageActionRow, MessageButton } = require('discord.js');
+
 const client = new Client({ 
   intents: [
     GatewayIntentBits.Guilds, 
