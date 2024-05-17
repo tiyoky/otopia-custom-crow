@@ -201,5 +201,81 @@ client.on('messageCreate', async message => {
   }
 });
 
+  if (command === 'setticket') {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+      return message.channel.send('Seuls les administrateurs peuvent définir le rôle de modérateur.');
+    }
+
+    const modRole = message.guild.roles.cache.find(role => role.name === 'équipe otopia');
+    if (!modRole) {
+      try {
+        const createdRole = await message.guild.roles.create({
+          name: 'Modérateur',
+          color: 'BLUE',
+          permissions: [
+            'VIEW_CHANNEL',
+            'MANAGE_CHANNELS',
+            'MANAGE_MESSAGES'
+          ]
+        });
+        message.channel.send('Rôle Modérateur créé avec succès.');
+      } catch (error) {
+        console.error('Erreur lors de la création du rôle Modérateur:', error);
+        message.channel.send('Une erreur s\'est produite lors de la création du rôle Modérateur.');
+      }
+    }
+
+    const ticketEmbed = new EmbedBuilder()
+      .setTitle(`${message.guild.name} Ticket`)
+      .setDescription('Créez un ticket ci-dessous pour contacter le support. Si vous créez un ticket, c\'est parce qu\'il y a un problème, ou pour réclamer un giveaway, etc.')
+      .setColor('#00FF00');
+
+    const row = new MessageActionRow()
+      .addComponents(
+        new MessageButton()
+          .setCustomId('create_ticket')
+          .setLabel('Créer un ticket')
+          .setStyle('PRIMARY')
+      );
+
+    message.channel.send({ embeds: [ticketEmbed], components: [row] });
+  }
+});
+
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isButton()) return;
+
+  if (interaction.customId === 'create_ticket') {
+    const member = interaction.member;
+    const guild = interaction.guild;
+    const modRole = guild.roles.cache.find(role => role.name === 'Modérateur');
+
+    try {
+      const channel = await guild.channels.create(`${member.user.username}-ticket`, {
+        type: 'GUILD_TEXT',
+        permissionOverwrites: [
+          {
+            id: guild.id,
+            deny: ['VIEW_CHANNEL']
+          },
+          {
+            id: member.id,
+            allow: ['VIEW_CHANNEL']
+          },
+          {
+            id: modRole.id,
+            allow: ['VIEW_CHANNEL', 'MANAGE_CHANNELS', 'MANAGE_MESSAGES']
+          }
+        ]
+      });
+      
+      await interaction.reply({ content: `Le salon ${channel} a été créé.`, ephemeral: true });
+    } catch (error) {
+      console.error('Erreur lors de la création du salon de ticket:', error);
+      await interaction.reply({ content: 'Une erreur s\'est produite lors de la création du salon de ticket.', ephemeral: true });
+    }
+  }
+});
+
 client.login(process.env.TOKEN);
 
