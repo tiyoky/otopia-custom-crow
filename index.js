@@ -25,7 +25,7 @@ client.on('ready', () => {
 
   setInterval(() => {
     client.user.setPresence({
-      activities: [statuses[currentStatus]],
+      activities: [{ name: statuses[currentStatus].name, type: statuses[currentStatus].type }],
       status: 'online'
     });
     currentStatus = (currentStatus + 1) % statuses.length;
