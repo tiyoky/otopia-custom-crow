@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField, MessageActionRow, MessageButton } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 const client = new Client({ 
   intents: [
@@ -50,7 +50,9 @@ client.on('messageCreate', async message => {
     } else {
       message.channel.send(`Usage: ${prefix}prefix <nouveau préfixe>`);
     }
-  } else if (command === 'create') {
+  }
+
+  if (command === 'create') {
     if (!args.length || !args[0].match(/<:[a-zA-Z0-9]+:[0-9]+>/)) {
       return message.channel.send("Merci de spécifier un emoji valide.");
     }
@@ -64,7 +66,9 @@ client.on('messageCreate', async message => {
         console.error('Erreur lors de la création de l\'emoji:', error);
         message.channel.send("Une erreur s'est produite lors de la création de l'emoji.");
       });
-  } else if (command === 'gcreate') {
+  }
+
+  if (command === 'gcreate') {
     if (args.length < 4) {
       return message.channel.send(`Usage: ${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`);
     }
@@ -112,7 +116,9 @@ client.on('messageCreate', async message => {
       message.channel.send(winners.map(winner => `<@${winner}>`).join(', ') + ' a/ont gagné! Créez un ticket pour réclamer votre prix.');
 
     }, duration);
-  } else if (command === 'help') {
+  }
+
+  if (command === 'help') {
     const helpEmbed = new EmbedBuilder()
       .setColor('#FFFF00')
       .setTitle('Menu d\'aide')
@@ -130,7 +136,9 @@ client.on('messageCreate', async message => {
       .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
 
     message.channel.send({ embeds: [helpEmbed] });
-  } else if (command === 'mute') {
+  }
+
+  if (command === 'mute') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
       return message.channel.send('Vous n\'avez pas les permissions pour mute les membres.');
     }
@@ -144,7 +152,9 @@ client.on('messageCreate', async message => {
     } catch (err) {
       message.channel.send('Impossible de mute ce membre.');
     }
-  } else if (command === 'unmute') {
+  }
+
+  if (command === 'unmute') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {
       return message.channel.send('Vous n\'avez pas les permissions pour unmute les membres.');
     }
@@ -158,7 +168,9 @@ client.on('messageCreate', async message => {
     } catch (err) {
       message.channel.send('Impossible de unmute ce membre.');
     }
-  } else if (command === 'kick') {
+  }
+
+  if (command === 'kick') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
       return message.channel.send('Vous n\'avez pas les permissions pour kick les membres.');
     }
@@ -172,7 +184,9 @@ client.on('messageCreate', async message => {
     } catch (err) {
       message.channel.send('Impossible de kick ce membre.');
     }
-  } else if (command === 'ban') {
+  }
+
+  if (command === 'ban') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       return message.channel.send('Vous n\'avez pas les permissions pour ban les membres.');
     }
@@ -186,7 +200,9 @@ client.on('messageCreate', async message => {
     } catch (err) {
       message.channel.send('Impossible de ban ce membre.');
     }
-  } else if (command === 'restart') {
+  }
+
+  if (command === 'restart') {
     if (message.author.id !== '1018206885704372274') {
       return message.channel.send('Seul l\'owner du bot peut utiliser cette commande.');
     }
