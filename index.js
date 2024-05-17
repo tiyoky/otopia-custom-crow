@@ -131,7 +131,7 @@ client.on('messageCreate', async message => {
         { name: `${prefix}kick <@user>`, value: 'Kick un utilisateur.' },
         { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
         { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' },
-        { name: `${prefix}setticket`, value: 'Crée un salon de ticket réservé au support.' }
+        { name: `${prefix}setticket`, value: met le systeme de ticket.' }
       )
       .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
 
