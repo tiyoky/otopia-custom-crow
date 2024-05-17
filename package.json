@@ -1,14 +1,19 @@
 {
   "name": "discord-bot",
   "version": "1.0.0",
-  "description": "Un bot Discord avec commande de changement de préfixe et aide.",
+  "description": "Un bot Discord avec diverses fonctionnalités",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "author": "Votre Nom",
-  "license": "MIT",
   "dependencies": {
-    "discord.js": "^14.0.0"
-  }
+    "discord.js": "^14.7.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "VotreNom",
+  "license": "ISC"
+}
+
 }
