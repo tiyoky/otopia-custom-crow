@@ -130,8 +130,7 @@ client.on('messageCreate', async message => {
         { name: `${prefix}unmute <@user>`, value: 'Unmute un utilisateur.' },
         { name: `${prefix}kick <@user>`, value: 'Kick un utilisateur.' },
         { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
-        { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' },
-        { name: `${prefix}setticket`, value: 'Mettre en place le système de ticket.' }
+        { name: `${prefix}gcreate <titre> <description> <temp en ms> <nombre gagnant>`, value: 'Crée un giveaway.' }
       )
       .setFooter({ text: 'made by tiyoky', iconURL: client.user.displayAvatarURL() });
 
@@ -159,6 +158,7 @@ client.on('messageCreate', async message => {
       return message.channel.send('Vous n\'avez pas les permissions pour unmute les membres.');
     }
     const user = message.mentions.members.first();
+   
     if (!user) {
       return message.channel.send('Veuillez mentionner un utilisateur à unmute.');
     }
@@ -201,47 +201,6 @@ client.on('messageCreate', async message => {
       message.channel.send('Impossible de ban ce membre.');
     }
   }
-
-  if (command === 'setticket') {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      return message.channel.send('Seuls les administrateurs peuvent définir le rôle de modérateur.');
-    }
-
-    try {
-      const modRole = message.guild.roles.cache.find(role => role.name === 'équipe otopia');
-      if (!modRole) {
-        const createdRole = await message.guild.roles.create({
-          name: 'Modérateur',
-          color: 'BLUE',
-          permissions: [
-            'VIEW_CHANNEL',
-            'MANAGE_CHANNELS',
-            'MANAGE_MESSAGES'
-          ]
-        });
-        message.channel.send('Rôle Modérateur créé avec succès.');
-      }
-
-      const ticketEmbed = new EmbedBuilder()
-        .setTitle(`${message.guild.name} Ticket`)
-        .setDescription('Créez un ticket ci-dessous pour contacter le support. Si vous créez un ticket, c\'est parce qu\'il y a un problème, ou pour réclamer un giveaway, etc.')
-        .setColor('#00FF00');
-
-      const row = new MessageActionRow()
-        .addComponents(
-          new MessageButton()
-            .setCustomId('create_ticket')
-            .setLabel('Créer un ticket')
-            .setStyle('PRIMARY')
-        );
-
-      message.channel.send({ embeds: [ticketEmbed], components: [row] });
-    } catch (error) {
-      console.error('Une erreur s\'est produite lors de la création du rôle Modérateur ou de l\'envoi de l\'embed de ticket:', error);
-      message.channel.send('Une erreur s\'est produite lors de la configuration du système de ticket.');
-    }
-  }
 });
 
 client.login(process.env.TOKEN);
-
