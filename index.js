@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelTypes, Intents, InteractionType } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, EmbedBuilder, PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelTypes, Intents, InteractionType, MessageEmbed } = require('discord.js');
 const axios = require('axios');
 
 const client = new Client({ 
@@ -141,6 +141,9 @@ client.on('messageCreate', async message => {
     message.channel.send({ embeds: [avatarEmbed] });
   }
 
+
+
+
   if (command === 'help') {
     const helpEmbeds = [
       new EmbedBuilder()
@@ -156,7 +159,7 @@ client.on('messageCreate', async message => {
           { name: `${prefix}ban <@user>`, value: 'Ban un utilisateur.' },
           { name: `${prefix}gcreate <titre> <description> <temps en minutes> <nombre gagnant>`, value: 'Crée un giveaway.' }
         )
-        .setFooter({ text: 'Page 1/2 - made by tiyoky', iconURL: client.user.displayAvatarURL() }),
+        .setFooter({ text: 'Page 1/3 - made by tiyoky', iconURL: client.user.displayAvatarURL() }),
       new EmbedBuilder()
         .setColor('#FFFF00')
         .setTitle('Menu d\'aide - Page 2')
@@ -166,13 +169,22 @@ client.on('messageCreate', async message => {
           { name: `${prefix}restart`, value: 'restart le bot (owner only)' },
           { name: `${prefix}say <msg>`, value: 'Envoie le message (admin only)' },
           { name: `${prefix}avatar`, value: 'Affiche l\'avatar d\'un utilisateur.' },
-          { name: `${prefix}who`, value: 'Infos sur le bot.' },
+          { name: `${prefix}who`, value: 'Infos sur le bot.' }
+        )
+        .setFooter({ text: 'Page 2/3 - made by tiyoky', iconURL: client.user.displayAvatarURL() }),
+      new EmbedBuilder()
+        .setColor('#FFFF00')
+        .setTitle('Menu d\'aide - Page 3')
+        .setDescription('Voici les commandes disponibles :')
+        .addFields(
           { name: `${prefix}cat`, value: 'Affiche une image de chat aléatoire.' },
           { name: `${prefix}dog`, value: 'Affiche une image de chien aléatoire.' },
-          { name: `${prefix}kissorkill`, value: 'envoie un embed kiss or kill (admin only)' }
+          { name: `${prefix}kissorkill`, value: 'envoie un embed kiss or kill (admin only)' },
+          { name: `${prefix}blague`, value: 'envoie une blague aléatoire' },
+          { name: `${prefix}random`, value: 'envoie un truc random de l\'internet' }
         )
-        .setFooter({ text: 'Page 2/2 - made by tiyoky', iconURL: client.user.displayAvatarURL() })
-    ];
+        .setFooter({ text: 'Page 3/3 - made by tiyoky', iconURL: client.user.displayAvatarURL() })
+      ];
 
     const row = new ActionRowBuilder()
       .addComponents(
@@ -265,6 +277,23 @@ client.on('messageCreate', async message => {
       message.channel.send('Impossible de unmute ce membre.');
     }
   }
+    if (command === 'random') {
+      try {
+        const response = await axios.get('https://api.imgflip.com/get_memes');
+        const memes = response.data.data.memes;
+        const randomIndex = Math.floor(Math.random() * memes.length);
+        const randomMeme = memes[randomIndex];
+        const memeEmbed = new EmbedBuilder()
+          .setTitle(randomMeme.name)
+          .setImage(randomMeme.url)
+          .setColor('#FF4500');
+        message.channel.send({ embeds: [memeEmbed] });
+      } catch (error) {
+        console.error('Erreur lors de la récupération du meme :', error);
+        message.channel.send('Une erreur s\'est produite en récupérant le meme.');
+        }
+      }
+  
 
   if (command === 'restart') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
@@ -326,27 +355,23 @@ client.on('messageCreate', async message => {
     }
   }
 
-  if (command === 'embedcreatefdfdfdfdfewfseifhsfsibfwaibsifjbaifbafafaijbfasibfasijbasifjbafijbasfijasbfiasjbfais') {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      return message.channel.send('Seuls les administrateurs peuvent utiliser cette commande.');
+  if (command === 'blague') {
+    try {
+      const response = await axios.get('https://official-joke-api.appspot.com/random_joke');
+      const joke = response.data;
+
+      const jokeEmbed = new EmbedBuilder()
+        .setColor('#FFFF00')
+        .setTitle('Voici une blague pour toi !')
+        .setDescription(`${joke.setup}\n\n${joke.punchline}`)
+        .setFooter({ text: 'Blague générée', iconURL: client.user.displayAvatarURL() });
+
+      message.channel.send({ embeds: [jokeEmbed] });
+    } catch (error) {
+      console.error('Erreur lors de la récupération de la blague :', error);
+      message.channel.send('Une erreur s\'est produite en récupérant la blague.');
     }
-
-    const [title, description, imageUrl] = args;
-    if (!title || !description) {
-      return message.channel.send(`Usage: ${prefix}embedcreate <titre> <description> [imageurl]`);
     }
-
-    const embed = new EmbedBuilder()
-      .setTitle(title)
-      .setDescription(description)
-      .setColor('#FF4500');
-
-    if (imageUrl) {
-      embed.setFooter({ text: 'Image de footer', iconURL: imageUrl });
-    }
-
-    message.channel.send({ embeds: [embed] });
-  }
-});
+    });
 
 client.login(process.env.TOKEN);
